@@ -1,2 +1,3 @@
 # Servo-ESC
-Custom 6-Layer Boards for better servo control.
+Custom 4-Layer Board for better servo control.
+Uses UART, SPI, and I2C communication.
