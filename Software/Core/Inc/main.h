@@ -59,6 +59,24 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define RGB_LED_BLUE_Pin GPIO_PIN_2
+#define RGB_LED_BLUE_GPIO_Port GPIOA
+#define RGB_LED_GREEN_Pin GPIO_PIN_3
+#define RGB_LED_GREEN_GPIO_Port GPIOA
+#define HBRIDGE_VREF_Pin GPIO_PIN_4
+#define HBRIDGE_VREF_GPIO_Port GPIOA
+#define RGB_LED_RED_Pin GPIO_PIN_5
+#define RGB_LED_RED_GPIO_Port GPIOA
+#define HBRIDGE_FALUT_Pin GPIO_PIN_7
+#define HBRIDGE_FALUT_GPIO_Port GPIOA
+#define HBRIDGE_IPROPI_Pin GPIO_PIN_0
+#define HBRIDGE_IPROPI_GPIO_Port GPIOB
+#define HBRIDGE_SLEEP_Pin GPIO_PIN_12
+#define HBRIDGE_SLEEP_GPIO_Port GPIOB
+#define TMP102_ALERT_Pin GPIO_PIN_8
+#define TMP102_ALERT_GPIO_Port GPIOB
+#define INA236_ALERT_Pin GPIO_PIN_9
+#define INA236_ALERT_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
