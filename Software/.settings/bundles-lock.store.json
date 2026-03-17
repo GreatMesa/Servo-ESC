@@ -41,6 +41,10 @@
         {
           "name": "gnu-tools-for-stm32",
           "version": "13.3.1+st.9"
+        },
+        {
+          "name": "gnu-tools-for-stm32",
+          "version": ">=10.3.1"
         }
       ]
     },
@@ -52,6 +56,10 @@
         {
           "name": "gnu-tools-for-stm32",
           "version": "13.3.1+st.9"
+        },
+        {
+          "name": "gnu-tools-for-stm32",
+          "version": ">=10.3.1"
         }
       ]
     },
@@ -63,6 +71,10 @@
         {
           "name": "gnu-tools-for-stm32",
           "version": "13.3.1+st.9"
+        },
+        {
+          "name": "gnu-tools-for-stm32",
+          "version": ">=10.3.1"
         }
       ]
     },
@@ -140,6 +152,39 @@
         {
           "name": "programmer",
           "version": "^2.20.0"
+        }
+      ]
+    },
+    {
+      "name": "rtos-proxy",
+      "version": "0.17.0+st.3",
+      "platform": "darwin",
+      "selected_by": [
+        {
+          "name": "rtos-proxy",
+          "version": "0.17.0+st.3"
+        }
+      ]
+    },
+    {
+      "name": "rtos-proxy",
+      "version": "0.17.0+st.3",
+      "platform": "x86_64-linux",
+      "selected_by": [
+        {
+          "name": "rtos-proxy",
+          "version": "0.17.0+st.3"
+        }
+      ]
+    },
+    {
+      "name": "rtos-proxy",
+      "version": "0.17.0+st.3",
+      "platform": "x86_64-windows",
+      "selected_by": [
+        {
+          "name": "rtos-proxy",
+          "version": "0.17.0+st.3"
         }
       ]
     },

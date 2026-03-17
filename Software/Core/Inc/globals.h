@@ -1,0 +1,9 @@
+#ifndef GLOBALS_H
+#define GLOBALS_H
+
+#define DRV8876_TASK_DELAY 10
+#define LED_TASK_DELAY 10
+#define INA236_TASK_DELAY 10
+#define TMP102_TASK_DELAY 10
+
+#endif 

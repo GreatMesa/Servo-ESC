@@ -46,8 +46,10 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/main.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/ina236.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/tmp102.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/RGBLED.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/DRV8876.c
+     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/MT6701.c
     # Add user sources here
 )
 

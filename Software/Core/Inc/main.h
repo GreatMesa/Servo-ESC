@@ -75,8 +75,10 @@ void Error_Handler(void);
 #define HBRIDGE_SLEEP_GPIO_Port GPIOB
 #define TMP102_ALERT_Pin GPIO_PIN_8
 #define TMP102_ALERT_GPIO_Port GPIOB
+#define TMP102_ALERT_EXTI_IRQn EXTI9_5_IRQn
 #define INA236_ALERT_Pin GPIO_PIN_9
 #define INA236_ALERT_GPIO_Port GPIOB
+#define INA236_ALERT_EXTI_IRQn EXTI9_5_IRQn
 
 /* USER CODE BEGIN Private defines */
 
