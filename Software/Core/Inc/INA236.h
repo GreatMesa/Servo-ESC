@@ -4,7 +4,6 @@
 #include "main.h"
 #include "stm32f3xx_hal_i2c.h"
 #include <stdint.h>
-#include <stdbool.h>
 
 #define INA236_I2C_ADDRESS (0b01000000 << 1)
 #define INA236_I2C_HANDLE hi2c1
@@ -32,14 +31,7 @@
 #define ALERT_REGISTER 0x07
 #define DEVICE_ID 0x3F
 
-/*
-    INA236 Configuration Register Map (Use INA236 Datasheet for bit configuration lookup table)
-    - Bits 12 (ADCRANGE) Bit to determine the configuration of 
-    - Bits 11 - 9 -> (AVG) 3 bit configuration to determine the number of ADC conversions to be averaged, register values are done after averages (configured for 1 average).
-    - Bits 8 - 6 -> (VBUSCT) 3 bit configuration to determine the conversion time for the bus voltage register (Configured for 1.1 milliseconds).
-    - Bits 5 - 3 -> (VSHCT) 3 bit configurattion to determine the conversion time for the shunt voltage register (Configured for 1.1 milliseconds).
-    - Bits 2 - 0 -> (MODE) 3 bit configuration used to determine the operating mode of the INA236 (Configured to  Continuous Shunt and Bus voltage).
-*/
+// Configuration Register Map
 #define INA236_CONFIG_RST 0b0
 #define INA236_CONFIG_ADC_RANGE 0b1
 #define INA236_CONFIG_AVG 0b0
@@ -47,24 +39,24 @@
 #define INA236_CONFIG_VSHCT 0b100
 #define INA236_CONFIG_MODE 0b111
 
+// Callibration Register Map
 #define INA236_MAX_CURRENT 1
 #define INA236_SHUNT_RESISTANCE 0.01
 
+// INA236 struct
 typedef struct
 {
     I2C_HandleTypeDef *I2Chandle;
     GPIO_TypeDef *interrupt;
-    
+    HAL_StatusTypeDef hal;
     float current;
     float power;
     float voltage;
-    /*Raw variables used for data transfer*/
     int16_t raw_current;
     int16_t raw_voltage;
     int16_t raw_power;
     uint16_t config;
     uint16_t callibration;
-    HAL_StatusTypeDef hal;
 } INA236;
 
 extern I2C_HandleTypeDef INA236_I2C_HANDLE;
@@ -72,7 +64,7 @@ extern I2C_HandleTypeDef INA236_I2C_HANDLE;
 //Functions
 uint16_t  INA236_Config();
 uint16_t  INA236_Callibration();
-HAL_StatusTypeDef INA236_Initialize(INA236 *ina236, I2C_HandleTypeDef *I2Chandle, GPIO_TypeDef *interrupt);
+HAL_StatusTypeDef INA236_Initialize(INA236 *ina236, I2C_HandleTypeDef *I2Chandle);
 void getCurrent(INA236 *ina236);
 void getVoltage(INA236 *ina236);
 void getPower(INA236 *ina236);

@@ -5323,12 +5323,6 @@
 		(uuid "c72199f0-7607-458f-a0dc-3cc8add41e3f")
 	)
 	(junction
-		(at 57.15 21.59)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "ca5e0124-4668-4dd3-8e41-60b7f3bbac56")
-	)
-	(junction
 		(at 60.96 135.89)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -5539,16 +5533,6 @@
 			(type default)
 		)
 		(uuid "1248264f-d140-4520-8960-31cceadc40f0")
-	)
-	(wire
-		(pts
-			(xy 57.15 21.59) (xy 59.69 21.59)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "12fd8e09-1ce0-48bd-8788-739429a0d6ac")
 	)
 	(wire
 		(pts
@@ -9448,6 +9432,72 @@
 			(project "SERVO-ESC"
 				(path "/67d9952a-3813-4173-9c26-155df027e538"
 					(reference "#PWR039")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3.3V")
+		(at 59.69 21.59 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "47990937-8fc6-49a0-9bb1-8e97416a4140")
+		(property "Reference" "#PWR054"
+			(at 59.69 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3.3VA"
+			(at 59.69 16.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 59.69 21.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 59.69 21.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+			(at 59.69 21.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "721e54d4-cce6-4006-8dc2-6edb0acd219c")
+		)
+		(instances
+			(project "SERVO-ESC"
+				(path "/67d9952a-3813-4173-9c26-155df027e538"
+					(reference "#PWR054")
 					(unit 1)
 				)
 			)

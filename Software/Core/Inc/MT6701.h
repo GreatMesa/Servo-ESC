@@ -27,7 +27,8 @@ typedef struct {
     HAL_StatusTypeDef  hal;
 } MT6701;
 
-HAL_StatusTypeDef MT6701_Initialize(MT6701 *encoder);
+HAL_StatusTypeDef MT6701_Initialize(MT6701 *encoder, I2C_HandleTypeDef *I2Chandle,
+                                    GPIO_TypeDef *interrupt);
 HAL_StatusTypeDef MT6701_Read(MT6701 *encoder);
 
 #endif /* MT6701_H */

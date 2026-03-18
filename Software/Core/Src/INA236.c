@@ -26,6 +26,9 @@ HAL_StatusTypeDef INA236_Initialize(INA236 *ina236, I2C_HandleTypeDef *I2Chandle
     ina236->I2Chandle = I2Chandle;
     ina236->config = INA236_Config();
     ina236->callibration = INA236_Callibration();
+    ina236->raw_current = 0;
+    ina236->raw_voltage = 0;
+    ina236->raw_power = 0;
     ina236->current = 0.0f;
     ina236->power = 0.0f;
     ina236->voltage = 0.0f;
@@ -34,11 +37,19 @@ HAL_StatusTypeDef INA236_Initialize(INA236 *ina236, I2C_HandleTypeDef *I2Chandle
     txBuf[0] = ((ina236->config >> 8) & 0xFF); txBuf[1] = (ina236->config & 0xFF);
     ina236->hal = HAL_I2C_Mem_Write(ina236->I2Chandle, INA236_I2C_ADDRESS,INA_CONFIG_REGISTER,I2C_MEMADD_SIZE_8BIT, txBuf, 2, 100);
     if(ina236->hal != HAL_OK){return ina236->hal;}
+    
     //Transmitting Callibration Register
     txBuf[0] = ((ina236->callibration >> 8) & 0xFF); txBuf[1] = (ina236->callibration & 0xFF);
     ina236->hal = HAL_I2C_Mem_Write(ina236->I2Chandle, INA236_I2C_ADDRESS,CALLIBRATION_REGISTER,I2C_MEMADD_SIZE_8BIT, txBuf, 2, 100);
     if(ina236->hal != HAL_OK){return ina236->hal;}
+    
+    //Transmitting Mask\Enable Register
+    txBuf[0] = (0b00000100); txBuf[1] = (0b00000000);
+    ina236->hal = HAL_I2C_Mem_Write(ina236->I2Chandle, INA236_I2C_ADDRESS,MASK_ENABLE_REGISTER,I2C_MEMADD_SIZE_8BIT, txBuf, 2, 100);
+    if(ina236->hal != HAL_OK){return ina236->hal;}
+    return ina236->hal;
 }
+
 
 void getCurrent(INA236 *ina236)
 {
