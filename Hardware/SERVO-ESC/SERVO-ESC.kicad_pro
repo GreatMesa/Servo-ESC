@@ -504,10 +504,10 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "../Magnetic-Encoder/",
+      "plot": "../Gerber/",
       "pos_files": "CPL Files/",
       "specctra_dsn": "",
-      "step": "",
+      "step": "SERVO-ESC.step",
       "svg": "",
       "vrml": ""
     },

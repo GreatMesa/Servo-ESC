@@ -50,7 +50,6 @@ HAL_StatusTypeDef INA236_Initialize(INA236 *ina236, I2C_HandleTypeDef *I2Chandle
     return ina236->hal;
 }
 
-
 void getCurrent(INA236 *ina236)
 {
     uint8_t rxBuf[2];
@@ -80,7 +79,7 @@ void getPower(INA236 *ina236)
     ina236->power = raw_power * current_lsb * 32;
 }
 
-void readINA236(INA236 *ina236)
+void INA236_Read(INA236 *ina236)
 {
     getCurrent(ina236);
     getVoltage(ina236);

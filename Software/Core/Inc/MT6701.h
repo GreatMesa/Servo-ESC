@@ -3,6 +3,7 @@
 
 #include "main.h"
 #include "stm32f3xx_hal_i2c.h"
+#include <stdint.h>
 
 /*
     MT6701 Register Map
@@ -24,15 +25,15 @@
 typedef struct {
   I2C_HandleTypeDef *I2Chandle;
   uint16_t raw_position;
-  uint16_t raw_rpm;
   float position;
+  float prevPosition;
   float rpm;
+  float prevRpm;
   HAL_StatusTypeDef hal;
 } MT6701;
 
 HAL_StatusTypeDef MT6701_Initialize(MT6701 *encoder,
-                                    I2C_HandleTypeDef *I2Chandle,
-                                    GPIO_TypeDef *interrupt);
+                                    I2C_HandleTypeDef *I2Chandle);
 HAL_StatusTypeDef MT6701_Read(MT6701 *encoder);
-
+void getRPM(MT6701 *encoder, int delay, float alpha);
 #endif /* MT6701_H */

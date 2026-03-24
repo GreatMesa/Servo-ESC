@@ -64,9 +64,10 @@ extern I2C_HandleTypeDef INA236_I2C_HANDLE;
 //Functions
 uint16_t  INA236_Config();
 uint16_t  INA236_Callibration();
-HAL_StatusTypeDef INA236_Initialize(INA236 *ina236, I2C_HandleTypeDef *I2Chandle);
+
+HAL_StatusTypeDef INA236_Initialize(INA236 *ina236, I2C_HandleTypeDef *I2Chandle, GPIO_TypeDef *interrupt);
 void getCurrent(INA236 *ina236);
 void getVoltage(INA236 *ina236);
 void getPower(INA236 *ina236);
-void readINA236(INA236 *ina236);
+void INA236_Read(INA236 *ina236);
 #endif

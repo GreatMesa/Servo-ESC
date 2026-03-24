@@ -20,11 +20,10 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "DRV8876.h"
-#include "INA236.h"
-#include "TMP102.h"
 #include "RGBLED.h"
+#include "INA236.h"
 #include "MT6701.h"
-
+#include "TMP102.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -134,13 +133,7 @@ int main(void)
   MX_TIM15_Init();
   MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
-  DRV8876_Initialize(&drv, &htim15,&hadc1,&hdac, HBRIDGE_SLEEP_GPIO_Port, HBRIDGE_SLEEP_Pin, HBRIDGE_FALUT_GPIO_Port, HBRIDGE_FALUT_Pin);
-  RGBLED_Initialize(&led, &htim2);
-  INA236_Initialize(&ina, &hi2c1, INA236_ALERT_GPIO_Port);
-  TMP102_Initialize(&tmp, &hi2c1, TMP102_ALERT_GPIO_Port);
-  
-  readTempature(&tmp);
-  readINA236(&ina);
+
   /* USER CODE END 2 */
 
   /* Init scheduler */
