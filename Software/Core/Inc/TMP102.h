@@ -36,6 +36,6 @@ typedef struct
 
 uint8_t getTMPConfig();
 bool    TMP102_Initialize(TMP102 *tmp102, I2C_HandleTypeDef *I2Chandle, GPIO_TypeDef *interrupt);
-void    readTempature(TMP102 *tmp102);
+void    TMP102_Read(TMP102 *tmp102);
 
 #endif /* TMP102_H_ */

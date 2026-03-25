@@ -19,11 +19,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "stdbool.h"
 #include "DRV8876.h"
 #include "RGBLED.h"
 #include "INA236.h"
 #include "MT6701.h"
 #include "TMP102.h"
+#include "cmsis_os2.h"
+#include "stm32f3xx_hal_gpio.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -56,13 +59,34 @@ I2C_HandleTypeDef hi2c3;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim15;
 
-/* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
+#define ina236Flag (1U << 0)
+#define tmp102Flag (1U << 1)
+
+void ina236Task(void *argument);
+void tmp102Task(void *argument);
+
+osThreadId_t ina236TaskHandle;
+const osThreadAttr_t ina236Task_attr = {
+  .name = "INA236 Task",
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+
+osThreadId_t tmp102TaskHandle;
+const osThreadAttr_t tmp102Task_attr = {
+  .name = "TMP102 Task",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/*I2C Mutex for INA236 & TMP102*/
+osMutexId_t diagnosticMutex;
+const osMutexAttr_t diagnosticMutex_attr = {
+  .name = "Diagnostic Mutex",     // human readable mutex name
+  .attr_bits = osMutexRecursive,    // attr_bits
+  .cb_mem = NULL,             // memory for control block   
+  .cb_size = 0U,                   // size for control block
+};
+
 /* USER CODE BEGIN PV */
 DRV8876 drv;
 MT6701 encoder;
@@ -70,8 +94,6 @@ RGBLED led;
 INA236 ina;
 TMP102 tmp;
 int DriveState = FORWARD;
-
-
 
 /* USER CODE END PV */
 
@@ -85,7 +107,6 @@ static void MX_TIM2_Init(void);
 static void MX_I2C3_Init(void);
 static void MX_TIM15_Init(void);
 static void MX_I2C2_Init(void);
-void StartDefaultTask(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -102,9 +123,9 @@ void StartDefaultTask(void *argument);
   */
 int main(void)
 {
-
   /* USER CODE BEGIN 1 */
-
+  INA236_Initialize(&ina, &hi2c1, INA236_ALERT_GPIO_Port);
+  TMP102_Initialize(&tmp, &hi2c1, TMP102_ALERT_GPIO_Port);
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -140,6 +161,7 @@ int main(void)
   osKernelInitialize();
 
   /* USER CODE BEGIN RTOS_MUTEX */
+  diagnosticMutex = osMutexNew(&diagnosticMutex_attr);
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
 
@@ -157,9 +179,10 @@ int main(void)
 
   /* Create the thread(s) */
   /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
+  ina236TaskHandle = osThreadNew(ina236Task,NULL,&ina236Task_attr);
+  tmp102TaskHandle = osThreadNew(tmp102Task,NULL,&tmp102Task_attr);
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
 
@@ -183,6 +206,32 @@ int main(void)
   /* USER CODE END 3 */
 }
 
+
+void ina236Task(void * argument)
+{
+  for(;;)
+  {
+    if(osMutexAcquire(diagnosticMutex, 5) == osOK)
+    {
+      INA236_Read(&ina);
+      osMutexRelease(diagnosticMutex);
+    }
+  }
+  osDelay(10);
+}
+
+void tmp102Task(void * argument)
+{
+  for(;;)
+  {
+    if(osMutexAcquire(diagnosticMutex, 5) == osOK)
+    {
+        TMP102_Read(&tmp);
+        osMutexRelease(diagnosticMutex);
+    }
+  }
+  osDelay(10);
+}
 /**
   * @brief System Clock Configuration
   * @retval None
@@ -638,15 +687,17 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(HBRIDGE_SLEEP_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : TMP102_ALERT_Pin INA236_ALERT_Pin */
-  GPIO_InitStruct.Pin = TMP102_ALERT_Pin|INA236_ALERT_Pin;
+  /*Configure GPIO pin : TMP102_ALERT_Pin */
+  GPIO_InitStruct.Pin = TMP102_ALERT_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(TMP102_ALERT_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : INA236_ALERT_Pin */
+  GPIO_InitStruct.Pin = INA236_ALERT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+  HAL_GPIO_Init(INA236_ALERT_GPIO_Port, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
@@ -656,25 +707,15 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
-
-/* USER CODE BEGIN Header_StartDefaultTask */
-/**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used
-  * @retval None
-  */
-/* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void *argument)
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-  /* USER CODE BEGIN 5 */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
+  if(GPIO_Pin == TMP102_ALERT_Pin) {
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+  } 
+  if(GPIO_Pin == INA236_ALERT_Pin) {
+      __NOP();
   }
-  /* USER CODE END 5 */
 }
-
 /**
   * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM6 interrupt took place, inside

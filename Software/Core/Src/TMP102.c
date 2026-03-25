@@ -62,7 +62,7 @@ bool TMP102_Initialize(TMP102 *tmp102, I2C_HandleTypeDef *I2Chandle, GPIO_TypeDe
     return (tmp102->hal == HAL_OK);
 }
 
-void readTempature(TMP102 *tmp102)
+void TMP102_Read(TMP102 *tmp102)
 {
     uint8_t rxBuf[2];
 
