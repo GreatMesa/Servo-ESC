@@ -34,7 +34,7 @@
 // Configuration Register Map
 #define INA236_CONFIG_RST 0b0
 #define INA236_CONFIG_ADC_RANGE 0b1
-#define INA236_CONFIG_AVG 0b0
+#define INA236_CONFIG_AVG 0b001
 #define INA236_CONFIG_VBUSCT 0b100
 #define INA236_CONFIG_VSHCT 0b100
 #define INA236_CONFIG_MODE 0b111
@@ -47,7 +47,6 @@
 typedef struct
 {
     I2C_HandleTypeDef *I2Chandle;
-    GPIO_TypeDef *interrupt;
     HAL_StatusTypeDef hal;
     float current;
     float power;
@@ -64,8 +63,9 @@ extern I2C_HandleTypeDef INA236_I2C_HANDLE;
 //Functions
 uint16_t  INA236_Config();
 uint16_t  INA236_Callibration();
+void INA236_Release(INA236 * ina236);
 
-HAL_StatusTypeDef INA236_Initialize(INA236 *ina236, I2C_HandleTypeDef *I2Chandle, GPIO_TypeDef *interrupt);
+HAL_StatusTypeDef INA236_Initialize(INA236 *ina236, I2C_HandleTypeDef *I2Chandle);
 void getCurrent(INA236 *ina236);
 void getVoltage(INA236 *ina236);
 void getPower(INA236 *ina236);

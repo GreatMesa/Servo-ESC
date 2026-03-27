@@ -49,7 +49,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/tmp102.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/RGBLED.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/DRV8876.c
-     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/MT6701.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/MT6701.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/i2cslave.c 
     # Add user sources here
 )

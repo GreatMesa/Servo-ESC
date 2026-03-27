@@ -14,25 +14,25 @@ void setColor(RGBLED * rgb, int state)
 {
     TIM_HandleTypeDef * tim = rgb->tim;
     if(state == SLEEP){
-    __HAL_TIM_SET_COMPARE(tim, TIM_CHANNEL_1, 0x22);
-    __HAL_TIM_SET_COMPARE(tim, TIM_CHANNEL_4, 0x22);
-    __HAL_TIM_SET_COMPARE(tim, TIM_CHANNEL_3, 0x22);
+    __HAL_TIM_SET_COMPARE(tim, TIM_CHANNEL_1, 0x88);
+    __HAL_TIM_SET_COMPARE(tim, TIM_CHANNEL_4, 0x88);
+    __HAL_TIM_SET_COMPARE(tim, TIM_CHANNEL_3, 0x88);
     }
     else if (state == FORWARD)
     {
     __HAL_TIM_SET_COMPARE(tim, TIM_CHANNEL_1, 0x00);
     __HAL_TIM_SET_COMPARE(tim, TIM_CHANNEL_4, 0x00);
-    __HAL_TIM_SET_COMPARE(tim, TIM_CHANNEL_3, 0x22);
+    __HAL_TIM_SET_COMPARE(tim, TIM_CHANNEL_3, 0x88);
     }
     else if (state == REVERSE)
     {
-    __HAL_TIM_SET_COMPARE(tim, TIM_CHANNEL_1, 0x22);
+    __HAL_TIM_SET_COMPARE(tim, TIM_CHANNEL_1, 0x88);
     __HAL_TIM_SET_COMPARE(tim, TIM_CHANNEL_4, 0x00);
     __HAL_TIM_SET_COMPARE(tim, TIM_CHANNEL_3, 0x00);
     }
     else if(state == BRAKE){
     __HAL_TIM_SET_COMPARE(tim, TIM_CHANNEL_1, 0x00);
-    __HAL_TIM_SET_COMPARE(tim, TIM_CHANNEL_4, 0x22);
+    __HAL_TIM_SET_COMPARE(tim, TIM_CHANNEL_4, 0x88);
     __HAL_TIM_SET_COMPARE(tim, TIM_CHANNEL_3, 0x00);
     }
 }

@@ -73,7 +73,9 @@
 #define configUSE_RECURSIVE_MUTEXES              1
 #define configUSE_COUNTING_SEMAPHORES            1
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION  0
-
+#define configGENERATE_RUN_TIME_STATS 1 /* 1: generate runtime statistics; 0: no runtime statistics */
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() /* Define this to initialize your timer/counter */
+#define portGET_RUN_TIME_COUNTER_VALUE() osKernelGetSysTimerCount()   
 /* Co-routine definitions. */
 #define configUSE_CO_ROUTINES                    0
 #define configMAX_CO_ROUTINE_PRIORITIES          ( 2 )

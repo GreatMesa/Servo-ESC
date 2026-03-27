@@ -20,7 +20,7 @@ uint16_t INA236_Callibration()
 }
 
 
-HAL_StatusTypeDef INA236_Initialize(INA236 *ina236, I2C_HandleTypeDef *I2Chandle, GPIO_TypeDef *interrupt)
+HAL_StatusTypeDef INA236_Initialize(INA236 *ina236, I2C_HandleTypeDef *I2Chandle)
 {
     //Configuring Starting Values
     ina236->I2Chandle = I2Chandle;
@@ -33,6 +33,7 @@ HAL_StatusTypeDef INA236_Initialize(INA236 *ina236, I2C_HandleTypeDef *I2Chandle
     ina236->power = 0.0f;
     ina236->voltage = 0.0f;
     uint8_t txBuf[2];
+    
     //Tramnsmitting Configuration Register
     txBuf[0] = ((ina236->config >> 8) & 0xFF); txBuf[1] = (ina236->config & 0xFF);
     ina236->hal = HAL_I2C_Mem_Write(ina236->I2Chandle, INA236_I2C_ADDRESS,INA_CONFIG_REGISTER,I2C_MEMADD_SIZE_8BIT, txBuf, 2, 100);
@@ -84,4 +85,13 @@ void INA236_Read(INA236 *ina236)
     getCurrent(ina236);
     getVoltage(ina236);
     getPower(ina236);
+    INA236_Release(ina236);
+}
+
+void INA236_Release(INA236 * ina236)
+{
+    uint8_t rxBuf[2];
+    HAL_I2C_Mem_Read(ina236->I2Chandle, INA236_I2C_ADDRESS,
+                 MASK_ENABLE_REGISTER, I2C_MEMADD_SIZE_8BIT,
+                 rxBuf, 2, 100);
 }
