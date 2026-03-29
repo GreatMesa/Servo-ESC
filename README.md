@@ -1,6 +1,6 @@
 # Servo-ESC
 Custom 4-Layer Board for better servo control.
-Uses UART, SPI, and I2C communication.
+Uses all I2C communication.
 ## Overview
 This project stems from the want to replace the boards that normally control position on commercial servos.
 
