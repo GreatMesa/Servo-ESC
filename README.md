@@ -9,7 +9,7 @@ The reason why I wanted to replace them is because 1, you can only control the p
 With these Servo ESC's, you can communicate to the board using I2C, which allows to send the wanted position, velocity, and torque, while also communicating back the current position, velocity, torque, power consumption, and board temperature. This allows for a much higher view into what is happening in the board while also giving the servo greater precision.
 
 ## Board Schematic
-<img width="1563" height="1163" alt="Screenshot 2026-01-02 130602" src="https://github.com/user-attachments/assets/9a1e0bfe-ec7d-4bf2-93c6-65cd50f1f782" />
+<img width="1541" height="1160" alt="Screenshot 2026-04-10 005249" src="https://github.com/user-attachments/assets/03f1024e-469b-4bfd-a997-f056aa560edb" />
 
 ## PCB Layout
 <img width="2083" height="1016" alt="Screenshot 2026-01-02 130759" src="https://github.com/user-attachments/assets/65330889-7cdb-4b2b-97b0-8231ca28c1e2" />
