@@ -19,16 +19,17 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
-#include "mt6701.h"
 #include "stdbool.h"
 #include "DRV8876.h"
 #include "RGBLED.h"
 #include "INA236.h"
 #include "MT6701.h"
 #include "TMP102.h"
+#include "pid.h"
 #include "cmsis_os2.h"
 #include "stm32f3xx_hal_gpio.h"
 #include <stdint.h>
+#include <sys/types.h>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -65,6 +66,7 @@ TIM_HandleTypeDef htim15;
 
 void diagnosticsTask(void *argument);
 void encoderTask(void *argument);
+void driverTask(void *argument);
 void pidTask(void *argument);
 void i2cslaveTask(void *argument);
 
@@ -110,7 +112,7 @@ MT6701 encoder;
 RGBLED led;
 INA236 ina;
 TMP102 tmp;
-
+PID pid;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -159,6 +161,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+
   MX_ADC1_Init();
   MX_DAC_Init();
   MX_I2C1_Init();
@@ -173,8 +176,10 @@ int main(void)
   MT6701_Initialize(&encoder, &hi2c3);
   DRV8876_Initialize(&drv, &htim15, &hadc1, &hdac, HBRIDGE_SLEEP_GPIO_Port,HBRIDGE_SLEEP_Pin, HBRIDGE_FALUT_GPIO_Port, HBRIDGE_FALUT_Pin);
   RGBLED_Initialize(&led, &htim2);
+  PID_Initialize(&pid, 0.1 , 0.2, 0.3, 0.4, 0.5);
+  setVelocity(&drv, 64000);
   /* USER CODE END 2 */
-
+  
   /* Init scheduler */
   osKernelInitialize();
 
@@ -199,9 +204,10 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   diagnosticsTaskHandle = osThreadNew(diagnosticsTask,NULL,&diagnosticsTask_attr);
-  encoderTaskHandle = osThreadNew(diagnosticsTask,NULL,&encoderTask_attr);
-  pidTaskHandle = osThreadNew(diagnosticsTask,NULL,&pidTask_attr);
-  i2cslaveTaskHandle = osThreadNew(diagnosticsTask,NULL,&i2cslaveTask_attr);
+  encoderTaskHandle = osThreadNew(encoderTask,NULL,&encoderTask_attr);
+  driverTaskHandle = osThreadNew(driverTask,NULL,&driverTask_attr);
+  //pidTaskHandle = osThreadNew(pidTask,NULL,&pidTask_attr);
+  //i2cslaveTaskHandle = osThreadNew(i2cslaveTask,NULL,&i2cslaveTask_attr);
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
 
@@ -251,8 +257,57 @@ void encoderTask(void *argument)
     osDelay(5);
   }
 }
+void pidTask(void *argument)
+{
+  for(;;)
+  {
+    PID_Step(&pid, 7, 8, 5, 5, 4, 4);
+    setVelocity(&drv, pid.power);
+  }
+}
 
-
+void driverTask(void *argument)
+{
+    for(;;)
+  {
+    if(drv.state == SLEEP)
+    {
+        HAL_GPIO_WritePin(HBRIDGE_SLEEP_GPIO_Port, HBRIDGE_SLEEP_Pin, 0);
+    }
+    else if(drv.state == COAST)
+    {
+        //Slows down the motor with a gradual decent.
+        HAL_GPIO_WritePin(HBRIDGE_SLEEP_GPIO_Port, HBRIDGE_SLEEP_Pin, 1);
+        __HAL_TIM_SET_COMPARE(drv.tim, TIM_CHANNEL_1, 0);
+        __HAL_TIM_SET_COMPARE(drv.tim, TIM_CHANNEL_2, 0);
+    }
+    else if(drv.state == REVERSE)
+    {
+        /*
+        */
+        HAL_GPIO_WritePin(HBRIDGE_SLEEP_GPIO_Port, HBRIDGE_SLEEP_Pin, 1);
+        __HAL_TIM_SET_COMPARE(drv.tim, TIM_CHANNEL_1, 0);
+        __HAL_TIM_SET_COMPARE(drv.tim, TIM_CHANNEL_2, drv.speed);
+    }
+    else if(drv.state == FORWARD)
+    {
+        HAL_GPIO_WritePin(HBRIDGE_SLEEP_GPIO_Port, HBRIDGE_SLEEP_Pin, 1);
+        __HAL_TIM_SET_COMPARE(drv.tim, TIM_CHANNEL_1, drv.speed);
+        __HAL_TIM_SET_COMPARE(drv.tim, TIM_CHANNEL_2, 0);
+    }
+    else if(drv.state == BRAKE)
+    {
+        HAL_GPIO_WritePin(HBRIDGE_SLEEP_GPIO_Port, HBRIDGE_SLEEP_Pin, 1);
+        __HAL_TIM_SET_COMPARE(drv.tim, TIM_CHANNEL_1, 65535);
+        __HAL_TIM_SET_COMPARE(drv.tim, TIM_CHANNEL_2, 0);
+    }
+    setColor(&led, drv.state);
+  }
+}
+void i2cslaveTask(void *argument)
+{
+  
+}
 /**
   * @brief System Clock Configuration
   * @retval None

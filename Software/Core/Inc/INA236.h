@@ -46,14 +46,18 @@
 // INA236 struct
 typedef struct
 {
+
     I2C_HandleTypeDef *I2Chandle;
     HAL_StatusTypeDef hal;
+    // Actual power values
     float current;
     float power;
     float voltage;
+    // Raw power values
     int16_t raw_current;
     int16_t raw_voltage;
     int16_t raw_power;
+    float current_lsb;
     uint16_t config;
     uint16_t callibration;
 } INA236;
@@ -64,7 +68,6 @@ extern I2C_HandleTypeDef INA236_I2C_HANDLE;
 uint16_t  INA236_Config();
 uint16_t  INA236_Callibration();
 void INA236_Release(INA236 * ina236);
-
 HAL_StatusTypeDef INA236_Initialize(INA236 *ina236, I2C_HandleTypeDef *I2Chandle);
 void getCurrent(INA236 *ina236);
 void getVoltage(INA236 *ina236);
